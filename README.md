@@ -1,2 +1,2 @@
-# Self-Supervised-Traffoc-Segmentatino-for-Live-Surveilance-Video
+# Self Supervised Traffic Segmentatino for Live Surveilance Video
 A traffic image segmentation network that learns online to segment both moving and still traffic from the background. The network uses motion of objects to learn the features.
