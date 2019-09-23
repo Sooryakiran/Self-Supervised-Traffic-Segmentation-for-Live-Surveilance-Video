@@ -38,7 +38,7 @@ class Memory:
 
         return 1
 
-    def get_batch(self):
+    def get_batch(self, batch_size = None):
         """
         Randomly samples training images and targets from the memory
 
@@ -46,7 +46,11 @@ class Memory:
         length = len(self.__data_x)
         if length <= 0:
             raise ValueError("Memory buffer is empty")
-        random_vector = [random.randint(0, length - 1) for _ in range(self.batch_size)]
+
+        if batch_size == None:
+            batch_size = self.batch_size
+
+        random_vector = [random.randint(0, length - 1) for _ in range(batch_size)]
         train_x = []
         train_y = []
 
@@ -56,6 +60,8 @@ class Memory:
 
         return np.asarray(train_x), np.asarray(train_y)
 
+    def length(self):
+        return len(self.__data_x)
 if __name__ == "__main__":
     print("This is not an executable file")
     print("Please run main.py")
