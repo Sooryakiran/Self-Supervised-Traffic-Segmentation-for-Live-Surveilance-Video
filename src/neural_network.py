@@ -50,7 +50,7 @@ class ImageSegmenter:
             Define the training operation
 
             """
-            self.loss = dice_loss_ + 0.01*regularisation_loss
+            self.loss = dice_loss_ + 0.0*regularisation_loss
             optimizer = tf.train.AdamOptimizer(learning_rate = self.learning_rate)
             self.trainop = optimizer.minimize(self.loss)
 
@@ -71,6 +71,15 @@ class ImageSegmenter:
         self.sess.run(self.global_init)
         self.sess.run(self.local_init)
         return 1
+
+    def load(self, path):
+        try:
+            print("Loading Saved Model from: %s" %path)
+            self.saver.restore(self.sess, path)
+        except:
+            print("No saved Model")
+            return False
+        return True
 
     def predict(self, image):
         feed_dict = {self.input_single_placeholder : np.expand_dims(image, 0)}
@@ -224,7 +233,7 @@ class ImageSegmenter:
         y_true_f = tf.reshape(y_true, [-1])
         y_pred_f = tf.reshape(y_pred, [-1])
         intersection = tf.reduce_sum(y_true_f * y_pred_f)
-        return 1. - (2. * intersection + 1.) / (tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + 1.)
+        return 1. - (2. * intersection + 1.) / (tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) - intersection + 1.)
 
 if __name__ == "__main__":
     print("This is not an executable file")

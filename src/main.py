@@ -4,7 +4,7 @@ import memory_buffer
 import utils
 import neural_network
 
-def main():
+def main(train = False):
     """
     The main body of the program
 
@@ -17,10 +17,12 @@ def main():
     print("Done\nInitializing Neural Network...")
     image_segmenter = neural_network.ImageSegmenter(batch_size = 2)
     image_segmenter.initialize()
+
+    if train == False:
+        image_segmenter.load('model/model.ckpt')
     print("Done")
     video_path = "../Tests/test1.asf"
     cap = cv2.VideoCapture(video_path)
-    train = True
 
     if (cap.isOpened()== False):
         raise ValueError("Error opening video stream or file")
@@ -60,6 +62,7 @@ def main():
                     image_segmenter.save()
                     print("Current Loss : %f" %training_loss)
 
+
             """
             Use the trained network to predict for current frame
 
@@ -89,4 +92,11 @@ def main():
 
 
 if __name__ == "__main__" :
+    utils.title("Online Traffic Segmentation")
+    print("Choose:\n 1. Run(Default)\n 2. Train from Scratch")
+    inp = int(input())
+
+    if inp == 2:
+        main(train = True)
+
     main()

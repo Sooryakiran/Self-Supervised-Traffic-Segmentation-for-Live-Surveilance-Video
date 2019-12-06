@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 class FourrierMotionEstimator:
     def __init__(self, receptive_field = 10):
@@ -15,8 +16,8 @@ class FourrierMotionEstimator:
     def get_motion(self):
         pixels_in_motion = self.__image_fft(np.asarray(self.__images))[0, :, :]
         ret, thresh = cv2.threshold(pixels_in_motion, 0.8, 255, cv2.THRESH_BINARY_INV)
-        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
-        # thresh = cv2.dilate(thresh, kernel, iterations = 2)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        thresh = cv2.dilate(thresh, kernel, iterations = 2)
         return thresh
 
 
@@ -52,7 +53,7 @@ def preprocess(image, image_size = 500, blur_kernel_size = 7):
     return cv2.GaussianBlur(image, (blur_kernel_size, blur_kernel_size), 0)
 
 def hist_correction(input):
-    
+
     """
     Histogram correction for the input image
 
@@ -62,6 +63,17 @@ def hist_correction(input):
         output[:, :, i] = cv2.equalizeHist(output[:, :, i])
 
     return output
+
+def get_terminal_size():
+    return os.popen('stty size', 'r').read().split()
+def title(item):
+    _, width = get_terminal_size()
+    print("="*int(width))
+    length = len(item)
+    rest = int((int(width) - length)/2)
+    print(" "*rest + item + " "*rest)
+    print("="*int(width))
+    return 1
 
 if __name__ == "__main__":
     print("This is not an executable file")
